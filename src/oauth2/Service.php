@@ -203,9 +203,15 @@ abstract class Service extends ServiceBase implements IAuthService
 		try {
 			$proxy = $this->getProxy();
 
-			if (!empty($_GET['code'])) {
+			$code  = '';
+    			if( !empty($_GET['code']) ){
+                		$code = $_GET['code'];
+            		}elseif(strpos($_GET['r'], 'code=') !== false){
+                		$code = str_replace('code=', '', Yii::$app->request->getQueryParam('r'));
+            		}
+            		if (!empty($code)) {
 				// This was a callback request from a service, get the token
-				$proxy->requestAccessToken($_GET['code']);
+                		$proxy->requestAccessToken($code);
 				$this->authenticated = true;
 			} else if ($proxy->hasValidAccessToken()) {
 				$this->authenticated = true;
